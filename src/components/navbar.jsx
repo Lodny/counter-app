@@ -1,17 +1,21 @@
 import React from "react";
 
-// Stateless Functional Component
+const NavBar = ({ tableInfo, onClick }) => {
+  // console.log(tableNames);
 
-const NavBar = ({ totalCounters }) => {
+  const btns = tableInfo.map((info) => (
+    <button
+      key={info.name}
+      className="btn btn-secondary mr-2"
+      onClick={() => onClick(info)}
+    >
+      {info.name}
+    </button>
+  ));
+
   return (
     <nav className="navbar navbar-light bg-light">
-      <div className="navbar-brand">
-        <i className="fa fa-shopping-cart fa-lg m-2" aria-hidden="true" />
-        <span className="badge badge-pill badge-info m-2" style={{ width: 50 }}>
-          {totalCounters}
-        </span>
-        Items
-      </div>
+      <div className="navbar-brand">{btns}</div>
     </nav>
   );
 };

@@ -1,69 +1,42 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import NavBar from "./components/navbar";
-import Counters from "./components/counters";
+import Lists from "./components/lists";
 
-class App extends Component {
-  state = {
-    counters: [
-      { id: 1, value: 0 },
-      { id: 2, value: 0 },
-      { id: 3, value: 0 },
-      { id: 4, value: 0 }
-    ]
+const tableInfo = [
+  { name: "users", dispField: "name" },
+  { name: "albums", dispField: "title" },
+  { name: "posts", dispField: "title" },
+  { name: "todos", dispField: "title" },
+  { name: "comments", dispField: "name" },
+  { name: "photos", dispField: "title" }
+];
+
+function App() {
+  const [currInfo, setCurrInfo] = useState(null);
+  const [datas, setDatas] = useState([]);
+
+  const handleMenu = (info) => {
+    // table = table.toLowerCase();
+    // console.log(table);
+
+    fetch(`https://jsonplaceholder.typicode.com/${info.name}`)
+      .then((response) => response.json())
+      .then((json) => {
+        setCurrInfo(info);
+        setDatas([...json]);
+      });
   };
 
-  handleIncrement = counter => {
-    const counters = [...this.state.counters];
-    const index = counters.indexOf(counter);
-    counters[index] = { ...counters[index] };
-    counters[index].value++;
-    this.setState({ counters });
-  };
+  useEffect(() => {
+    // console.log(JSON.stringify(datas));
+  }, [datas]);
 
-  handleDecrement = counter => {
-    const counters = [...this.state.counters];
-    const index = counters.indexOf(counter);
-    counters[index] = { ...counters[index] };
-    counters[index].value--;
-    this.setState({ counters });
-  };
-
-  handleReset = () => {
-    const counters = this.state.counters.map(c => {
-      c.value = 0;
-      return c;
-    });
-    this.setState({ counters });
-  };
-
-  handleDelete = counterId => {
-    const counters = this.state.counters.filter(c => c.id !== counterId);
-    this.setState({ counters });
-  };
-
-  handleRestart = () => {
-    window.location.reload();
-  };
-
-  render() {
-    return (
-      <div>
-        <NavBar
-          totalCounters={this.state.counters.filter(c => c.value > 0).length}
-        />
-        <main className="container">
-          <Counters
-            counters={this.state.counters}
-            onReset={this.handleReset}
-            onIncrement={this.handleIncrement}
-            onDecrement={this.handleDecrement}
-            onDelete={this.handleDelete}
-            onRestart={this.handleRestart}
-          />
-        </main>
-      </div>
-    );
-  }
+  return (
+    <div>
+      <NavBar tableInfo={tableInfo} onClick={handleMenu} />
+      <Lists currInfo={currInfo} datas={datas} />
+    </div>
+  );
 }
 
 export default App;
